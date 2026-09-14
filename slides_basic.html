@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>No. 214 Alder Row - Slide Viewer</title>
+  <style>
+    :root {
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-color: #1e293b;
+      --text-muted: #64748b;
+      --accent-color: #0284c7;
+      --border-color: #e2e8f0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 1rem;
+    }
+
+    .viewer-container {
+      width: 100%;
+      max-width: 800px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .slide-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 3rem 2.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      min-height: 400px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .slide-content {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .slide-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text-color);
+      line-height: 1.3;
+    }
+
+    .slide-body {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      white-space: pre-line;
+    }
+
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border-color);
+      padding-top: 1rem;
+      margin-top: 2rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    button {
+      background-color: var(--accent-color);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    button:hover {
+      background-color: #0369a1;
+    }
+
+    button:disabled {
+      background-color: var(--border-color);
+      color: var(--text-muted);
+      cursor: not-allowed;
+    }
+
+    .counter {
+      font-weight: 600;
+      color: var(--text-color);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="viewer-container">
+    <div class="slide-card">
+      <div class="slide-header">
+        <span id="slide-section">Open House / Web Kit</span>
+        <span>No. 214 Alder Row</span>
+      </div>
+      
+      <div class="slide-content">
+        <div class="slide-title" id="slide-title">Loading...</div>
+        <div class="slide-body" id="slide-body">Please wait while slides load.</div>
+      </div>
+
+      <div class="slide-footer">
+        <span>Home | Listing | Open House | Website | Contact</span>
+        <span id="slide-page-num">/01</span>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button id="prev-btn" onclick="prevSlide()" disabled>Previous</button>
+      <div class="counter"><span id="current-num">1</span> / <span id="total-num">20</span></div>
+      <button id="next-btn" onclick="nextSlide()">Next</button>
+    </div>
+  </div>
+
+  <script>
+    const slides = [
+      {
+        section: "OPEN HOUSE / WEB KIT",
+        title: "SATURDAY / 11 AM-2 PM / ALDER ROW",
+        body: "OPEN HOUSE WEBSITE DESIGN KIT\n\nA modular presentation for the listing, guest journey, RSVP experience, pricing story and follow-up sequence.\n\n2,480 SQ FT / 4 BED / 3 BATH\n$1,285,000\n\nRSVP FOR SATURDAY",
+        page: "/01"
+      },
+      {
+        section: "OPEN HOUSE / WEB KIT",
+        title: "SITE MAP / THREE-PART STORY",
+        body: "THE OPEN HOUSE AS A WEBSITE\n\n/01 Listing / Facts (PAGES 03–08)\n/02 Open House / Visit (PAGES 09–13)\n/03 Website / Conversion (PAGES 14–20)",
+        page: "/02"
+      },
+      {
+        section: "OPEN HOUSE / WEB KIT",
+        title: "01 SITE SECTION: THE LISTING",
+        body: "PROPERTY RECORD / 01 OF 03\nPHOTO APERTURE / 45 DEG CUT",
+        page: "/03"
+      },
+      {
+        section: "OPEN HOUSE / WEB KIT",
+        title: "PROPERTY SNAPSHOT / SAMPLE DATA",
+        body: "THE FACTS AT A GLANCE\n\n• Total Sq Ft: 2,480\n• Bed / Bath: 4 / 3\n• Lot Sq Ft: 6,136\n• Year Built: 2019\n\nLOT 52 X 118 FT / SAMPLE",
+        page: "/04"
+      },
+      {
+        section: "OPEN HOUSE / WEB KIT",
+        title: "FLOOR PLAN / GROUND LEVEL",
+        body: "ROOMS BY LIGHT\n\n• Living: 18 x 15 ft\n• Kitchen: 16 x 12 ft",
+        page: "/05"
+      },
+      {
+        section: "OPEN HOUSE / WEB KIT",
+        title: "SPACE GALLERY / THREE VIEWS",
+        body: "A QUIET, CONNECTED INTERIOR\n\n• Kitchen / East Light (Orthogonal window / 45 deg cut)\n• Living / Garden Axis (Orthogonal window / 45 deg cut)\n• Bedroom / Private Wing (Orthogonal window / 45 deg cut)\n\nGALLERY GRID / 03 APERTURES",
+        page: "/06"
+      },
+      {
+        section: "OPEN HOUSE / WEB KIT",
+        title: "MATERIAL SCHEDULE / TOUCH POINTS",
+        body: "FINISHES THAT HOLD THE LIGHT\n\n• White oak: Wide plank flooring\n• Honed stone: Kitchen work surface\n• Warm white: Low-sheen wall finish\n• Aged brass: Handles and accents\n\nFINISH SCHEDULE / 01-04",
+        page: "/07"
+      },
+      {
+        section: "OPEN HOUSE / WEB KIT",
+        title: "NEIGHBORHOOD / AMENITIES AND TRANSIT",
+        body: "EVERYDAY ACCESS\n\n• Alder Row Grocer, Park, Transit, Library, Center\n• 91 Walk Score\n• 14 Min Transit to Center\n\nAMENITY WALK / SAMPLE",
+        page: "/08"
+      },
+      {
+        section: "OPEN HOUSE / WEB KIT",
+        title: "02 SITE SECTION: THE OPEN HOUSE",
+        body: "GUEST JOURNEY / 02 OF 03",
+        page: "/09"
+      },
+      {
+        section: "OPEN HOUSE / WEB KIT",
+        title: "STAGING CHECKLIST / T-24 HOURS",
+        body: "READY BEFORE THE FIRST KNOCK\n\n• Open the sightlines: Clear entries and align doors\n• Tune the light: Raise blinds and warm the lamps\n• Set the route: Place room cards in visit order\n• Test the form: Confirm QR and RSVP handoff\n• Stage the close: Offers pack at the final stop\n\nCHECKLIST / 05 OPERATIONS",
+        page: "/10"
+      },
+      {
+        section: "OPEN HOUSE / WEB KIT",
+        title: "TOUR ROUTE / FIVE STOPS",
+        body: "A CLEAR TOUR ROUTE (Stops 1 to 5)\n\n9 MIN / 5 STOPS / ONE-WAY FLOW",
+        page: "/11"
+      },
+      {
+        section: "OPEN HOUSE / WEB KIT",
+        title: "OPEN HOUSE SCHEDULE / SATURDAY",
+        body: "THE DAY, MEASURED\n\n• 09:30 - Final walk-through (Light, temperature, route)\n• 10:30 - Agent briefing (Talking points and offers)\n• 11:00 - Doors open (RSVP and self-guided start)\n• 13:15 - Last guided tour (Kitchen to garden sequence)\n• 14:00 - Close and review (Feedback and next actions)",
+        page: "/12"
+      },
+      {
+        section: "OPEN HOUSE / WEB KIT",
+        title: "RSVP / LEAD CAPTURE",
+        body: "WELCOME, THEN LISTEN\n\nFields: NAME, EMAIL, VISIT SLOT, BUYING HORIZON\nSend visit details and one follow-up.\n\nFORM PATH / 04 FIELDS",
+        page: "/13"
+      },
+      {
+        section: "OPEN HOUSE / WEB KIT",
+        title: "03 SITE SECTION: THE WEBSITE",
+        body: "CONVERSION SYSTEM / 03 OF 03",
+        page: "/14"
+      },
+      {
+        section: "OPEN HOUSE / WEB KIT",
+        title: "LANDING PAGE / CONTENT STACK",
+        body: "ONE SCROLL. ONE ACTION.\n\n• HERO / Value and date\n• GALLERY / Spatial proof\n• FLOOR PLAN / Fit\n• CTA / Reserve a visit",
+        page: "/15"
+      },
+      {
+        section: "OPEN HOUSE / WEB KIT",
+        title: "CONVERSION PATH / SAMPLE FUNNEL",
+        body: "FROM CURIOUS TO CONFIRMED\n\n/01 See the property (Hero and gallery establish fit)\n/02 Check the details (Plan, features and schedule)\n/03 Choose a slot (Low-friction RSVP form)\n/04 Receive the pack (Confirmation and tour guide)\n\n18.4% RSVP RATE",
+        page: "/16"
+      },
+      {
+        section: "OPEN HOUSE / WEB KIT",
+        title: "CMA / SAMPLE COMPARABLES",
+        body: "CMA, VISUALIZED\n\n• Comp A: $498 / sq ft\n• Comp B: $512 / sq ft\n• No. 214: $518 / sq ft\n• Comp C: $535 / sq ft\n\n$ / SQ FT BARS + DAYS ON MARKET LINE",
+        page: "/17"
+      },
+      {
+        section: "OPEN HOUSE / WEB KIT",
+        title: "FOLLOW-UP / THREE TOUCHES",
+        body: "KEEP THE NEXT STEP CLEAR\n\n• 24H: Send the property pack (Plan, features and offer process)\n• 72H: Ask one useful question (Capture fit, concern and timing)\n• 7D: Close the feedback loop (Share status or next showing)\n\nNEXT ACTION / OFFER TIMELINE",
+        page: "/18"
+      },
+      {
+        section: "OPEN HOUSE / WEB KIT",
+        title: "CLIENT FEEDBACK / SAMPLE QUOTE",
+        body: "A VISIT THAT FELT EFFORTLESS\n\n“The page answered our practical questions before we arrived, and the guided route let us focus on how the rooms actually lived.”\n\nProspective buyer / sample testimonial\nSubmitted three days after the open house",
+        page: "/19"
+      },
+      {
+        section: "OPEN HOUSE / WEB KIT",
+        title: "CONTACT / NEXT STEP",
+        body: "THANKS.\nBring the listing, visit plan and lead path into one clear open-house experience.\n\n• EMAIL: hello@alderrow.example\n• PHONE: +1 555 014 0214\n• VISIT: No. 214 Alder Row / sample address",
+        page: "/20"
+      }
+    ];
+
+    let currentIndex = 0;
+
+    function updateSlide() {
+      const slide = slides[currentIndex];
+      document.getElementById('slide-section').textContent = slide.section;
+      document.getElementById('slide-title').textContent = slide.title;
+      document.getElementById('slide-body').textContent = slide.body;
+      document.getElementById('slide-page-num').textContent = slide.page;
+      document.getElementById('current-num').textContent = currentIndex + 1;
+      document.getElementById('total-num').textContent = slides.length;
+
+      document.getElementById('prev-btn').disabled = currentIndex === 0;
+      document.getElementById('next-btn').disabled = currentIndex === slides.length - 1;
+    }
+
+    function nextSlide() {
+      if (currentIndex < slides.length - 1) {
+        currentIndex++;
+        updateSlide();
+      }
+    }
+
+    function prevSlide() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateSlide();
+      }
+    }
+
+    // Keyboard navigation support
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'Space') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft') {
+        prevSlide();
+      }
+    });
+
+    // Initialize
+    updateSlide();
+  </script>
+</body>
+</html>
